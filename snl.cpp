@@ -24,9 +24,6 @@ static char name[50];
 // 计数器
 static int count = 0;
 
-// 锁
-static struct flock lock;
-
 
 static void enable_network_layer(){
     network_enabled = ENABLE;
@@ -36,21 +33,42 @@ static void disable_network_layer(){
     network_enabled = DISALBE;
 }
 
-/*
- * 
- */
+
+static void create_file(){
+    int n_read = read(dataFd, buffer, BLOCK);
+    
+    if(n_read < 0){
+        die("read failed");
+    }
+
+    inc(count);
+
+    sprintf(name, "network_datalink.share.%d", count);
+    fd = creat(name, 0777);
+
+    if(fd < 0){
+        die("open failed");
+    }
+
+    set_lock(fd, F_WRLCK);
+    int n_write = write(fd, buffer, n_read);
+    set_lock(fd, F_UNLCK);
+
+    if(n_write < 0 || n_write != n_read){
+        die("write failed");
+    }
+    
+    close(fd);
+}
+
+
 static void receive_sig38(int signum){
     // 判断文件是否存在
     sprintf(name, "network_datalink.share.%d", count);
     if(access(name, F_OK) != -1){
         // 之前一定是DISABLE 且 一定上过锁
         if(network_enabled == DISALBE){
-            fcntl(fd,F_GETLK,&lock);
-            if(lock.l_type == F_WRLCK){
-                if(fcntl(fd, F_UNLCK, &lock) < 0){
-                    die("unlock error");
-                }
-            }            
+            set_lock(fd, F_UNLCK);          
         }else{
             die("receive_sig38 bug");
         }
@@ -68,51 +86,15 @@ static void receive_sig38(int signum){
 static void receive_sig39(int signum){
     network_enabled = DISALBE;
 
-    // 给共享文件上个锁就结束了, 非阻塞
-    if(fcntl(fd, F_SETLK, &lock)){
-        die("lock error");
-    }
-
+    set_lock(fd, F_WRLCK);          
 }
 
 
-static void create_file(){
-    int n_read = read(dataFd, buffer, BLOCK);
-    
-    if(n_read < 0){
-        die("read failed");
-    }
 
-    if(++count == 10000){
-        count = 1;
-    }
-
-    sprintf(name, "network_datalink.share.%d", count);
-    fd = creat(name, 0777);
-
-    if(fd < 0){
-        die("open failed");
-    }
-
-    int n_write = write(fd, buffer, n_read);
-
-    if(n_write < 0 || n_write != n_read){
-        die("write failed");
-    }
-
-    close(fd);
-}
-
-void snl(pid_t pid, const char* file_name){
-    sdl_pid = pid;
-    snl_pid = getpid();
-    dataFd = open(file_name, O_RDONLY);
-
-    lock.l_type = F_WRLCK; //写锁
-    lock.l_start = 0;
-    lock.l_whence = SEEK_SET;
-    lock.l_len = 0;
-    lock.l_pid = snl_pid;
+void snl(int* pidArr){
+    sdl_pid = pidArr[1];
+    snl_pid = pidArr[0];
+    dataFd = open("", O_RDONLY);
 
     if(dataFd < 0){
         die(strerror(errno));

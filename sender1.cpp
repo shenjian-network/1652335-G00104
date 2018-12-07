@@ -13,6 +13,9 @@
 #include <time.h>
 #include <fcntl.h>
 
+#include "snl.h"
+#include "sdl.h"
+
 using namespace std;
 
 const int HW_ID = 1;
@@ -163,23 +166,7 @@ void prepareProc(int *pidArr, const procState & procS, const int shmid)
 	sleep(1);
 }
 
-/*-----------*/
-void SNL(int* pidArr)
-{
-	while(1)
-		;
-}
-void SDL(int* pidArr)
-{
-	while(1)
-		;
-}
-void SPL(int* pidArr)
-{
-	while(1)
-		;
-}
-/*-----------*/
+
 
 void forkSender(int & shmid, procState & procS)
 {
@@ -194,14 +181,14 @@ void forkSender(int & shmid, procState & procS)
 		{
 			procS = eSNL;
 			prepareProc(pidArr, procS, shmid);
-			SNL(pidArr);
+			snl(pidArr);
 			exit(0);
 		}
 		else
 		{
 			procS = eSPL;
 			prepareProc(pidArr, procS, shmid);
-			SPL(pidArr);
+			// spl(pidArr);
 			exit(0);
 		}
 	}
@@ -209,7 +196,7 @@ void forkSender(int & shmid, procState & procS)
 	{
 		procS = eSDL;
 		prepareProc(pidArr, procS, shmid);
-		SDL(pidArr);
+		sdl(pidArr);
 		exit(0);
 	}
 }
