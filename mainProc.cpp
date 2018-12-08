@@ -117,7 +117,7 @@ void prepareProc(int *pidArr, const procState & procS, const int shmid, bool pro
 
 void checkArgc(int argc, bool procType)
 {
-	if((procType == 0 && argc != 2) || (procType == 1 && argc != 3))
+	if((procType == 0 && argc != 3) || (procType == 1 && argc != 4))
 	{
 		cerr << "参数个数错误" << endl;
 		exit(1);

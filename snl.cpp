@@ -1,5 +1,4 @@
 #include "snl.h"
-#include "common.h"
 
 // SNL对应的进程号
 static pid_t snl_pid;
@@ -94,12 +93,10 @@ static void receive_sig39(int signum){
     set_lock(fd, F_WRLCK);          
 }
 
-
-
-void snl(int* pidArr){
+void snl(int* pidArr, std::string (&argvStr)[maxArgc]){
     sdl_pid = pidArr[1];
     snl_pid = pidArr[0];
-    dataFd = open("jd.html", O_RDONLY);
+    dataFd = open(argvStr[2].c_str(), O_RDONLY);
 
     if(dataFd < 0){
         die(strerror(errno));

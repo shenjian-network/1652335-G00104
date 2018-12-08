@@ -16,7 +16,7 @@ void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool
 		{
 			procS = eNL;
 			prepareProc(pidArr, procS, shmid, procType);
-			snl(pidArr);
+			snl(pidArr, argvStr);
 			exit(0);
 		}
 		else

@@ -1,5 +1,4 @@
 #include "rnl.h"
-#include "common.h"
 
 // Data文件的文件描述符
 static int dataFd;
@@ -43,8 +42,8 @@ static void receive_sig38(int signum){
 
 
 
-void rnl(int* pidArr){
-    dataFd = open("output", 0777);
+void rnl(int* pidArr, std::string (&argvStr)[maxArgc]){
+    dataFd = open(argvStr[3].c_str(), O_CREAT | O_APPEND | O_RDWR, 0777);
 
     if(dataFd < 0){
         die(strerror(errno));

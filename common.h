@@ -1,6 +1,7 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
+#include<bits/stdc++.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <signal.h>
