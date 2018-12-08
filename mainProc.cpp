@@ -100,6 +100,7 @@ void prepareProc(int *pidArr, const procState & procS, const int shmid, bool pro
 	createDaemon();
 	pidArr[procS] = getpid();
     string procTypeStr = procType == 0 ? string("send") : string("receiver");
+	cout << "setproctitle " << procS << " begin" << endl;
 	switch(procS)
 	{
 		case eNL:
@@ -115,7 +116,8 @@ void prepareProc(int *pidArr, const procState & procS, const int shmid, bool pro
 			cerr << "procS error!" << endl;
 			workDone(shmid, procS);
 	}
-	sleep(1);
+	cout << "setproctitle " << procS << " done" << endl;
+	sleep(3 - procS);
 }
 
 void checkArgc(int argc, bool procType)

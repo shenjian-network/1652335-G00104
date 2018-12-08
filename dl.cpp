@@ -119,5 +119,5 @@ void SDL_init_signaction()
     one_timer.it_interval.tv_usec=1;
 	one_timer.it_value.tv_sec=0;
     one_timer.it_value.tv_usec=1;
-	setitimer(ITIMER_REAL,&one_timer,NULL);
+	//setitimer(ITIMER_REAL,&one_timer,NULL);
 }
