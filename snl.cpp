@@ -22,8 +22,10 @@ static char buffer[BLOCK + 1];
 static char name[50];
 
 // 计数器
-static int count = 0;
+static int count = 1;
 
+
+static int flag = 0;
 
 static void enable_network_layer(){
     network_enabled = ENABLE;
@@ -35,15 +37,24 @@ static void disable_network_layer(){
 
 
 static void create_file(){
+    if(flag){
+        return;
+    }
+    
     int n_read = read(dataFd, buffer, BLOCK);
     
     if(n_read < 0){
         die("read failed");
     }
 
-    inc(count);
+    if(n_read < BLOCK){
+        // 最后一个文件
+        if(!flag)
+            flag = !flag;
+    }
 
     sprintf(name, "network_datalink.share.%d", count);
+    inc(count);
     fd = creat(name, 0777);
 
     if(fd < 0){
@@ -53,22 +64,20 @@ static void create_file(){
     int n_write = write(fd, buffer, n_read);
 
     if(n_write < 0 || n_write != n_read){
-        die("write failed");
+        die("write failed"); 
     }
     
     close(fd);
 }
 
-
 static void receive_sig38(int signum){
     // 判断文件是否存在
+    printf("%d\n", count);
     sprintf(name, "network_datalink.share.%d", count);
     if(access(name, F_OK) != -1){
         // 之前一定是DISABLE 且 一定上过锁
         if(network_enabled == DISALBE){
             set_lock(fd, F_UNLCK);          
-        }else{
-            die("receive_sig38 bug");
         }
     }
 
@@ -83,7 +92,6 @@ static void receive_sig38(int signum){
 
 static void receive_sig39(int signum){
     network_enabled = DISALBE;
-
     set_lock(fd, F_WRLCK);          
 }
 
@@ -102,6 +110,8 @@ void snl(int* pidArr){
     signal(38, receive_sig38);
     signal(39, receive_sig39);
 
+    // 一开始要主动调用一次
+    receive_sig38(0);
     // 主循环
     while(true){
         sleep(1);
