@@ -14,21 +14,25 @@
 #include <errno.h>
 #include <string.h>  
 
-
+const int SIG_CHK_ERR = 35;
+const int SIG_FRAME_ARRIVAL = 36;
+const int SIG_NETWORK_LAYER_READY = 37;
+const int SIG_ENABLE_NETWORK_LAYER = 38;
+const int SIG_DISABLE_NETWORK_LAYER = 39;
+const int SIG_D2P = 40;
+const int maxArgc = 20;
 #define ENABLE 1
 #define DISALBE 0
-
 #define BLOCK 1024
+#define  MAX_PKT  1024
+
 #define MAX_SEQ 10000
-#define inc(k)  if(k<MAX_SEQ) k=k+1; else k=0;
+#define inc(k) if(k<MAX_SEQ) k=k+1; else k=1;
+
+void set_lock(int fd, int type);
 
 // 错误退出
 void die(const char* msg);
-
-// 设置锁
-void set_lock(int fd, int type);
-
-#define  MAX_PKT  1024
 
 typedef unsigned int seq_nr;    //发送序号
 typedef struct {unsigned char data[MAX_PKT];} packet; //数据包，纯数据

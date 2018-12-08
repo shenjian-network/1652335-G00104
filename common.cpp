@@ -27,7 +27,7 @@ void set_lock(int fd, int type)
 	lock.l_type = type;	
 
 	if(fcntl(fd,F_SETLKW, &lock) == -1){
-		perror("fcntl");
+		perror("fuck");
 		exit(EXIT_FAILURE);
 	}
 	

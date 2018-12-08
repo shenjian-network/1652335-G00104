@@ -12,16 +12,17 @@
 #include <errno.h>
 #include <time.h>
 #include <fcntl.h>
-
+#include "common.h"
+#include "SPL.h"
 #include "snl.h"
 #include "sdl.h"
+
 
 using namespace std;
 
 const int HW_ID = 1;
 const int PROJ_ID = 233;
 const char * PATHNAME = ".";
-const int maxArgc = 20;
 extern char **environ;
 static char **g_main_Argv = NULL; /* pointer to argument vector */
 static char *g_main_LastArgv = NULL; /* end of argv */
@@ -168,7 +169,7 @@ void prepareProc(int *pidArr, const procState & procS, const int shmid)
 
 
 
-void forkSender(int & shmid, procState & procS)
+void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc])
 {
 	shmid = createShm(1024);
 	int *pidArr = (int*)shmat(shmid, NULL, 0);
@@ -188,7 +189,7 @@ void forkSender(int & shmid, procState & procS)
 		{
 			procS = eSPL;
 			prepareProc(pidArr, procS, shmid);
-			// spl(pidArr);
+			SPL(pidArr, argvStr);
 			exit(0);
 		}
 	}
@@ -213,7 +214,7 @@ int main(int argc, char* argv[])
 
 	int shmid;
 	procState procS;
-	forkSender(shmid, procS);
+	forkSender(shmid, procS, argvStr);
 
 	workDone(shmid, procS);
 }

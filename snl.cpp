@@ -50,9 +50,7 @@ static void create_file(){
         die("open failed");
     }
 
-    set_lock(fd, F_WRLCK);
     int n_write = write(fd, buffer, n_read);
-    set_lock(fd, F_UNLCK);
 
     if(n_write < 0 || n_write != n_read){
         die("write failed");
@@ -94,7 +92,7 @@ static void receive_sig39(int signum){
 void snl(int* pidArr){
     sdl_pid = pidArr[1];
     snl_pid = pidArr[0];
-    dataFd = open("", O_RDONLY);
+    dataFd = open("jd.html", O_RDONLY);
 
     if(dataFd < 0){
         die(strerror(errno));

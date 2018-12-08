@@ -40,9 +40,10 @@ void sdl(int* pidArr){
     spl_pid = pidArr[2];
 
     while(1){
+        sleep(1);
         packet p;
         from_network_layer(&p);
         printf("count %d", count);
-        sleep(1);
+        
     }
 }
