@@ -4,7 +4,7 @@
 #include "rdl.h"
 
 
-void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool procType)
+void forkReceiver(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool procType)
 {
 	shmid = createShm(1024);
 	int *pidArr = (int*)shmat(shmid, NULL, 0);
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 
 	int shmid;
 	procState procS;
-	forkSender(shmid, procS, argvStr, procType);
+	forkReceiver(shmid, procS, argvStr, procType);
 
 	workDone(shmid, procS);
 }

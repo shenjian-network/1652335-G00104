@@ -28,4 +28,6 @@ void stop_timer(seq_nr k);
 
 void wait_for_event(event_type* event);
 
+void SDL_init_signaction();
+
 #endif // DL_H_

@@ -12,18 +12,20 @@ void SPL_initServer(string (&argvStr)[maxArgc])
 	    printf("socket fail ! \r\n");
 	    exit(EXIT_FAILURE);
 	}
- 
+    
+    int flag = 1,len = sizeof(int); 
+    if(setsockopt(sfp, SOL_SOCKET, SO_REUSEADDR, &flag, len) == -1) 
+   	{ 
+      	perror("setsockopt"); 
+     	exit(EXIT_FAILURE);
+	}  
 	printf("socket ok !\r\n");
 	bzero(&s_add,sizeof(struct sockaddr_in));
 	s_add.sin_family = AF_INET;
 	s_add.sin_addr.s_addr = htonl(INADDR_ANY);
 	s_add.sin_port = htons(portnum);
-    int flag = 1,len = sizeof(int); 
-	if(setsockopt(sfp, SOL_SOCKET, SO_REUSEADDR, &flag, len) == -1) 
-   	{ 
-      	perror("setsockopt"); 
-     	exit(EXIT_FAILURE);
-	}  
+    
+	
 
     if(-1 == bind(sfp,(struct sockaddr *)(&s_add), sizeof(struct sockaddr)))
 	{

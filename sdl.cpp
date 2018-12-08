@@ -22,11 +22,18 @@ static char name2[50];
 
 static int flag = 0;
 
+static int flag2 = 0;
+
 /*
  *  sdl读了一个文件，snl才能写入下一个，两边cnt应该相等
  *  sdl将读到的内容写入到packet里面，
  */
 static void from_network_layer(packet* p){
+    if(flag){
+        printf("SDL EXIT_SUCCESS\n");
+        //SDL执行结束
+        exit(EXIT_SUCCESS);
+    }
     sprintf(name, "snl.network_datalink.share.%d", cnt);
     int fd = open(name, O_RDONLY);
     if(fd < 0){
@@ -39,6 +46,12 @@ static void from_network_layer(packet* p){
     int n_read = read(fd, buffer, BLOCK);
     if(n_read < 0){
         die("read failed");
+    }
+
+    if(n_read < BLOCK){
+        // 最后一个文件
+        if(!flag)
+            flag = !flag;
     }
    
     set_lock(fd, F_UNLCK);
@@ -71,7 +84,9 @@ static void to_physical_layer(frame* f){
 }
 
 
+
 void sdl(int* pidArr){
+    SDL_init_signaction();
     snl_pid = pidArr[0];
     sdl_pid = pidArr[1];
     spl_pid = pidArr[2];

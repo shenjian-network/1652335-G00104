@@ -54,7 +54,7 @@ static void create_file(){
 
     sprintf(name, "snl.network_datalink.share.%d", count);
     inc(count);
-    fd = creat(name, 0777);
+    fd = creat(name, S_IRUSR | S_IWUSR);
 
     if(fd < 0){
         die("open failed");
