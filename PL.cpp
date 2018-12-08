@@ -4,7 +4,7 @@ static int countRecv;
 void preparePLData(bool PL_type)
 {
     /*
-    PL:´Ó¶Ô¶Ë½ÓÊÕÊı¾İ£¬²¢·ÅÈëÎÄ¼şÖĞ
+    PL:ä»å¯¹ç«¯æ¥æ”¶æ•°æ®ï¼Œå¹¶æ”¾å…¥æ–‡ä»¶ä¸­
     */
     static string plStr[2] = {string("spl"), string("sdl")};
     static string file_name_pre = plStr[PL_type] + "physical_datalink.share.";
@@ -14,18 +14,18 @@ void preparePLData(bool PL_type)
     countRecv = (countRecv + 1) % MAX_COUNT;
     int fd_recv = open(file_name.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0666);
 
-    /*´Ó¶Ô¶Ë½ÓÊÕÊı¾İ*/
+    /*ä»å¯¹ç«¯æ¥æ”¶æ•°æ®*/
     frame frameRecv;
     int size = myRead(socketFd, &frameRecv, ACK_SIZE);
     if(frameRecv.kind == data)
         size += myRead(socketFd, &(frameRecv.info), MAX_PKT);
-    /*½«Êı¾İ·ÅÈëÎÄ¼ş*/
+    /*å°†æ•°æ®æ”¾å…¥æ–‡ä»¶*/
     myWrite(fd_recv, &frameRecv, size);
     close(fd_recv);
 }
 
-//to_physical_layer¾ÍÊÇĞ´Êı¾İ£¬Ö®ºó¾Í»ákill(PL, SIG_D2P)
-void PL_receive_SIG_D2P(int, siginfo_t*, void*)//ÊÕµ½SIG_D2PĞÅºÅ£¬½«µÃµ½µÄÊı¾İ·¢ËÍ
+//to_physical_layerå°±æ˜¯å†™æ•°æ®ï¼Œä¹‹åå°±ä¼škill(PL, SIG_D2P)
+void PL_receive_SIG_D2P(int, siginfo_t*, void*)//æ”¶åˆ°SIG_D2Pä¿¡å·ï¼Œå°†å¾—åˆ°çš„æ•°æ®å‘é€
 {
     static int count_D2P = 0;
     static string file_name_pre = "datalink_physical.share.";
