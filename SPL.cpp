@@ -65,22 +65,29 @@ void SPL(int* pidArr, string (&argvStr)[maxArgc])
     SPL_init_sigaction();
     SPL_initServer(argvStr);
     socketFd = nfp;
-    fd_set readfds;
+    fd_set readfds,writefds;
     while(1)
     {
         //sleep(1);
         /*
-        �ж��Ƿ���֡�������ݿ��Զ�������У����͸�SDLһ��frame_arriva�ź�
-        �ж��Ƿ���֡
+        判断是否有帧到达数据可以读，如果有，发送给SDL一个frame_arriva信号
+        判断是否有帧
         */
         FD_ZERO(&readfds);
 	    FD_SET(nfp, &readfds);
-	    int select_res = select(nfp + 1, &readfds, NULL, NULL, NULL);
+        writefds=readfds;
+	    int select_res = select(nfp + 1, &readfds, &writefds, NULL, NULL);
         if(select_res > 0)
         {
-            preparePLData();
-            kill(pidArr[1], SIG_FRAME_ARRIVAL);
+            if(FD_ISSET(nfp,&readfds)){
+                preparePLData();
+                kill(pidArr[1], SIG_FRAME_ARRIVAL);
+            }
+            if(FD_ISSET(nfp,&writefds))
+            {
+                PL_receive_SIG_D2P();
+            }
         }
-        //�����Ǳ�SDL�жϣ�һ����D2P������Ҫд���ݣ���һ����P2D������Ҫ������
+        //否则是被SDL中断，一种是D2P，就是要写数据，另一种是P2D，就是要收数据
     }
 }

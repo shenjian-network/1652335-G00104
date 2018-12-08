@@ -50,13 +50,15 @@ void set_lock(int fd, int type)
 	}*/
 }
 
-// 读入数据
+// 读入数据,如果文件结束则返回0，否则会循环读到size为止
 int myRead(int fd, void *buffer, int size)
 {
+    int retSize=0;
     int RecvSize;
+    char *cbuffer=(char*)buffer;
     while (1)
     {
-        RecvSize = read(fd, (char*)buffer, size);
+        RecvSize = read(fd, cbuffer, size);
         if (RecvSize < 0)
         {
             if ((errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN))
@@ -67,30 +69,41 @@ int myRead(int fd, void *buffer, int size)
                 die("read error");
             }
         }
-        else if (RecvSize == 0)
+        else if(RecvSize==0)
         {
-            die("connect interrupted");
+            return 0;
         }
-        break;
+        size-=RecvSize;
+        cbuffer+=RecvSize;
+        retSize+=RecvSize;
+        if(size==0)
+            break;
     }
-    return RecvSize;
+    return retSize;
 }
 
 // 写数据
 int myWrite(int fd, void *buffer, int size)
 {
+    int befSize=size;
     int SendSize; 
+    char* cbuffer=(char*)buffer;
     while (1)
     {
-        SendSize=write(fd, (char*)buffer, size);
+        SendSize=write(fd, cbuffer, size);
         if (SendSize <= 0)
         {
             if ((errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN))
+            {
                 continue;
+            }
             else
                 die("write error");
         }
-        break;
+        size-=SendSize;
+        cbuffer+=SendSize;
+        if(size==0)
+            break;
     }
-    return SendSize;
+    return befSize;
 }
