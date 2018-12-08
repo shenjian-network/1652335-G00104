@@ -4,7 +4,7 @@ static int countReady = 0;
 
 void SIG_D2P_Handle(int sigv)
 {
-    printf("1\n");
+    // printf("1\n");
     countReady++;
     return;
 }
@@ -37,7 +37,7 @@ void PL_receive_SIG_D2P(int socketFd, int procType)
 {
     if (countReady > 0)
     {
-        cout << "countReady:" << countReady << endl;
+        // cout << "countReady:" << countReady << endl;
         countReady--;
         static int count_D2P = 0;
         static string plStr[2] = {string("sdl"), string("rdl")};

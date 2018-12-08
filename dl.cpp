@@ -54,6 +54,7 @@ void sigHandle(int sigv){
             event_list.push(cksum_err);
         break;
         case SIG_FRAME_ARRIVAL:
+            cout << "SIG_FRAM_ARRIVAL" << endl;
             event_list.push(frame_arrival);
         break;
         case SIG_NETWORK_LAYER_READY: 

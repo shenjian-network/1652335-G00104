@@ -117,7 +117,7 @@ void prepareProc(int *pidArr, const procState & procS, const int shmid, bool pro
 			workDone(shmid, procS);
 	}
 	cout << "setproctitle " << procS << " done" << endl;
-	sleep(3 - procS);
+	sleep(1 + procS);
 }
 
 void checkArgc(int argc, bool procType)

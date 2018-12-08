@@ -21,7 +21,7 @@ using namespace std;
 extern char **environ;
 static char **g_main_Argv = NULL; /* pointer to argument vector */
 static char *g_main_LastArgv = NULL; /* end of argv */
-static int PROJ_ID;
+extern int PROJ_ID;
 enum procState
 {
 	eNL,

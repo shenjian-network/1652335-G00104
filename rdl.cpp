@@ -15,15 +15,15 @@ static char name2[50];
 
 void from_physical_layer(frame* f){
     sprintf(name1, "rpl.physical_datalink.share.%d", cnt_from_phy);
-    int fd = open(name1, 0777);
+    int fd = open(name1, O_RDONLY);
     if(fd < 0){
-        die("sdl open failed");
+        die("rdl open failed");
     }
     inc(cnt_from_phy);
     int n_read = myRead(fd, f, ACK_SIZE);
     if (f->kind == data)
     {
-        n_read+=myRead(fd, f+ACK_SIZE, MAX_PKT);
+        n_read+=myRead(fd, &(f->info), MAX_PKT);
     }
     close(fd);
 }
@@ -32,7 +32,7 @@ void to_network_layer(packet* p){
     sprintf(name2, "rdl.datalink_network.share.%d", cnt_to_net);
     int fd = open(name2, O_CREAT | O_WRONLY, 0777);
     if(fd < 0){
-        die("sdl open failed");
+        die("rdl open failed");
     }
     inc(cnt_to_net);
     int n_write = myWrite(fd, p->data, BLOCK);
@@ -55,7 +55,12 @@ bool judgeClose(frame *f)
 
 
 void rdl(int* pidArr){
+
+    cout << getpid() << " RDL begin" << endl;
     SDL_init_signaction();
+
+    cout << "init_sig done" << endl;
+
     rnl_pid = pidArr[0];
     rdl_pid = pidArr[1];
     rpl_pid = pidArr[2];

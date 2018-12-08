@@ -40,10 +40,12 @@ static void create_file(){
         return;
     }
     
-    int n_read = read(dataFd, buffer, BLOCK);
+    int n_read = myRead(dataFd, buffer, BLOCK);
     
-    if(n_read < 0){
-        die("read failed");
+    if(n_read == 0){
+        printf("snl read done\n");
+        while(1)
+            sleep(2);
     }
 
     if(n_read < BLOCK){
@@ -59,7 +61,7 @@ static void create_file(){
     if(fd < 0){
         die("open failed");
     }
-    printf("add lock begin write\n");
+    // printf("add lock begin write\n");
     set_lock(fd, F_WRLCK);
     int n_write = myWrite(fd, buffer, n_read);
     set_lock(fd, F_UNLCK);

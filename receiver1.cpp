@@ -3,6 +3,7 @@
 #include "rnl.h"
 #include "rdl.h"
 
+int PROJ_ID;
 
 void forkReceiver(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool procType)
 {

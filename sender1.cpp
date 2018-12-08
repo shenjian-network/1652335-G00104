@@ -3,6 +3,8 @@
 #include "snl.h"
 #include "sdl.h"
 
+int PROJ_ID;
+
 void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], int procType)
 {
 	shmid = createShm(1024);

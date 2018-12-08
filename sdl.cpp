@@ -14,7 +14,7 @@ static int cnt_to_phy = 0;
 
 static struct flock lock;
 
-static char buffer[BLOCK + 1];
+//static char buffer[BLOCK + 1];
 
 static char name[50];
 
@@ -30,13 +30,6 @@ static int flag2 = 0;
  */
 static void from_network_layer(packet *p)
 {
-    if (flag)
-    {
-        printf("SDL EXIT_SUCCESS\n");
-        //SDL执�?结束
-        exit(EXIT_SUCCESS);
-        //return;
-    }
     sprintf(name, "snl.network_datalink.share.%d", cnt);
     while (1)
     {
@@ -46,13 +39,15 @@ static void from_network_layer(packet *p)
             continue;
         }
         inc(cnt);
-        printf("枷锁\n");
+        // printf("枷锁\n");
         set_lock(fd, F_RDLCK); //如果snl disable，会直接锁�?
-        printf("解锁\n");
-        int n_read = myRead(fd, buffer, BLOCK);
-        printf("readsize:%d\n",n_read);
+        // printf("解锁\n");
+        memset((char*)(p), 0, sizeof(packet));
+        int n_read = myRead(fd, p->data, BLOCK);
+        // printf("readsize:%d\n",n_read);
         if (n_read < BLOCK)
         {
+            cout << "n_read < BLOCK" << endl;
             // 最后一�?���?
             if (!flag)
                 flag = !flag;
@@ -62,7 +57,7 @@ static void from_network_layer(packet *p)
         close(fd);
         break;
     }
-    memcpy(p->data, buffer, MAX_PKT);
+    //memcpy(p->data, buffer, MAX_PKT);
     kill(snl_pid, 38);
 }
 
@@ -97,17 +92,24 @@ void sdl(int *pidArr)
     spl_pid = pidArr[2];
 
     frame s;
-    packet buffer;
+    packet buffer_s;
     event_type myEvent;
     while (true)
     {
         wait_for_event(&myEvent);
         if(myEvent==network_layer_ready)
         {
-            from_network_layer(&buffer);
-            s.info = buffer;
+            from_network_layer(&buffer_s);
+            s.info = buffer_s;
             s.kind=data;
             to_physical_layer(&s);
+            if(flag){
+                s.kind=data;
+                memset((char*)(&s.info),0,sizeof(packet));
+                to_physical_layer(&s);
+                printf("sdl done\n");
+                exit(EXIT_SUCCESS);
+            }
         }
     }
 }

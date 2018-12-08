@@ -53,6 +53,7 @@ void RPL(int* pidArr, string (&argvStr)[maxArgc], int procType)
         {
             if(FD_ISSET(cfd,&readfds)){
                 preparePLData(cfd, procType);
+                cout << pidArr[1] << endl;
                 kill(pidArr[1], SIG_FRAME_ARRIVAL);
             }
             if(FD_ISSET(cfd,&writefds))
