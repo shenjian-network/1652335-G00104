@@ -1,5 +1,12 @@
 #include "PL.h"
 static int countRecv;
+static int countReady = 0;
+
+void SIG_D2P_Handle(int sigv)
+{
+    countReady++;
+    return;
+}
 
 void preparePLData()
 {
@@ -17,7 +24,7 @@ void preparePLData()
     /*从对端接收数据*/
     frame frameRecv;
     int size = myRead(socketFd, &frameRecv, ACK_SIZE);
-    if(frameRecv.kind == data)
+    if (frameRecv.kind == data)
         size += myRead(socketFd, &(frameRecv.info), MAX_PKT);
     /*将数据放入文件*/
     myWrite(fd_recv, &frameRecv, size);
@@ -25,28 +32,29 @@ void preparePLData()
 }
 
 //to_physical_layer就是写数据，之后就会kill(PL, SIG_D2P)
-void PL_receive_SIG_D2P(int, siginfo_t*, void*)//收到SIG_D2P信号，将得到的数据发送
+void PL_receive_SIG_D2P()
 {
-    static int count_D2P = 0;
-    static string plStr[2] = {string("spl"), string("sdl")};
-    static string file_name_pre = plStr[procType] + ".datalink_physical.share.";
-    static char countStr[10];
-    sprintf(countStr, "%d", count_D2P);
-    string file_name = file_name_pre + countStr;
-    count_D2P = (count_D2P + 1) % MAX_COUNT;
-    int fd_datalink_physical = open(file_name.c_str(), O_RDONLY);
-    if(fd_datalink_physical == -1)
+    if (countReady > 0)
     {
-        cerr << "open file " << file_name << " error!";
-        return;
-    }
-    frame frameToSend;
-
-    int size = myRead(fd_datalink_physical, &frameToSend, sizeof(frameToSend));
-
-    int writebytes;
-    switch(frameToSend.kind)
-    {
+        countReady--;
+        static int count_D2P = 0;
+        static string plStr[2] = {string("spl"), string("sdl")};
+        static string file_name_pre = plStr[procType] + ".datalink_physical.share.";
+        static char countStr[10];
+        sprintf(countStr, "%d", count_D2P);
+        string file_name = file_name_pre + countStr;
+        count_D2P = (count_D2P + 1) % MAX_COUNT;
+        int fd_datalink_physical = open(file_name.c_str(), O_RDONLY);
+        if (fd_datalink_physical == -1)
+        {
+            cerr << "open file " << file_name << " error!";
+            return;
+        }
+        frame frameToSend;
+        int size = myRead(fd_datalink_physical, &frameToSend, sizeof(frameToSend));
+        int writebytes;
+        switch (frameToSend.kind)
+        {
         case data:
             writebytes = myWrite(socketFd, &frameToSend, MAX_FRAME_SIZE);
             break;
@@ -58,15 +66,12 @@ void PL_receive_SIG_D2P(int, siginfo_t*, void*)//收到SIG_D2P信号，将得到
             break;
         default:
             cerr << "datalink_physical_data error!" << endl;
+        }
+        close(fd_datalink_physical);
     }
-    close(fd_datalink_physical);
 }
 
 void PL_init_signaction()
 {
-	struct sigaction tact;
-	tact.sa_sigaction = PL_receive_SIG_D2P;
-	tact.sa_flags = SA_SIGINFO;
-	sigemptyset(&tact.sa_mask);
-	sigaction(SIG_D2P, &tact, NULL);
+    signal(SIG_D2P, SIG_D2P_Handle);
 }

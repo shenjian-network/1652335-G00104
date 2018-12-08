@@ -22,6 +22,7 @@ const int NAK_SIZE = 12;
 static int socketFd;
 static int procType;
 void preparePLData();
-void PL_receive_SIG_D2P(int, siginfo_t*, void*);
+void PL_receive_SIG_D2P();
 void PL_init_signaction();
+void SIG_D2P_Handle(int sigv);
 #endif
