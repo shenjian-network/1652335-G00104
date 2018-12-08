@@ -29,10 +29,16 @@ const int maxArgc = 20;
 #define MAX_SEQ 10000
 #define inc(k) if(k<MAX_SEQ) k=k+1; else k=1;
 
-void set_lock(int fd, int type);
+void set_lock(int fd, int type=F_WRLCK);
 
 // 错误退出
 void die(const char* msg);
+
+// 读入数据
+int myRead(int fd,char* buffer,int size);
+
+// 写数据
+int myWrite(int fd,char* buffer,int size);
 
 typedef unsigned int seq_nr;    //发送序号
 typedef struct {unsigned char data[MAX_PKT];} packet; //数据包，纯数据
