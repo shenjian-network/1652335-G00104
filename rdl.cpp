@@ -41,6 +41,7 @@ void to_network_layer(packet* p){
 
 
 void rdl(int* pidArr){
+    SDL_init_signaction();
     rnl_pid = pidArr[0];
     rdl_pid = pidArr[1];
     rpl_pid = pidArr[2];

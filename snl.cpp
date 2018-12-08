@@ -94,6 +94,10 @@ static void receive_sig39(int signum){
 }
 
 void snl(int* pidArr, std::string (&argvStr)[maxArgc]){
+    // 注册
+    signal(38, receive_sig38);
+    signal(39, receive_sig39);
+    
     sdl_pid = pidArr[1];
     snl_pid = pidArr[0];
     dataFd = open(argvStr[2].c_str(), O_RDONLY);
@@ -101,10 +105,6 @@ void snl(int* pidArr, std::string (&argvStr)[maxArgc]){
     if(dataFd < 0){
         die(strerror(errno));
     }
-
-     // 注册
-    signal(38, receive_sig38);
-    signal(39, receive_sig39);
 
     // 一开始要主动调用一次
     receive_sig38(0);                                                                                            

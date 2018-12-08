@@ -72,6 +72,7 @@ static void to_physical_layer(frame* f){
 
 
 void sdl(int* pidArr){
+    SDL_init_signaction();
     snl_pid = pidArr[0];
     sdl_pid = pidArr[1];
     spl_pid = pidArr[2];

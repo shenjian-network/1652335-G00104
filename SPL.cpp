@@ -52,6 +52,7 @@ void endProcSPL(const int & fd_datalink_physical)
     close(fd_datalink_physical);
     close(nfp);
     close(sfp);
+    cout << "endProcSPL" << endl;
     exit(0);
 }
 

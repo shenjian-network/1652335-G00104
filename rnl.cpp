@@ -43,14 +43,14 @@ static void receive_sig38(int signum){
 
 
 void rnl(int* pidArr, std::string (&argvStr)[maxArgc]){
+    // 注册
+    signal(38, receive_sig38);
+    
     dataFd = open(argvStr[3].c_str(), O_CREAT | O_APPEND | O_RDWR, 0777);
 
     if(dataFd < 0){
         die(strerror(errno));
     }
-
-     // 注册
-    signal(38, receive_sig38);
 
     // 主循环
     while(true){
