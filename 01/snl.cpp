@@ -53,7 +53,7 @@ static void create_file(){
             flag = !flag;
     }
 
-    sprintf(name, "network_datalink.share.%d", count);
+    sprintf(name, "snl.network_datalink.share.%d", count);
     inc(count);
     fd = creat(name, 0777);
 
@@ -73,7 +73,7 @@ static void create_file(){
 static void receive_sig38(int signum){
     // 判断文件是否存在
     printf("%d\n", count);
-    sprintf(name, "network_datalink.share.%d", count);
+    sprintf(name, "snl.network_datalink.share.%d", count);
     if(access(name, F_OK) != -1){
         // 之前一定是DISABLE 且 一定上过锁
         if(network_enabled == DISALBE){
@@ -100,7 +100,7 @@ static void receive_sig39(int signum){
 void snl(int* pidArr){
     sdl_pid = pidArr[1];
     snl_pid = pidArr[0];
-    dataFd = open("jd.html", O_RDONLY);
+    dataFd = open("jd.html", O_RDONLY);  // TODO：输入文件名自定
 
     if(dataFd < 0){
         die(strerror(errno));
