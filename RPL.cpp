@@ -18,8 +18,10 @@ void RPL_initClient(string (&argvStr)[maxArgc])
 	s_add.sin_addr.s_addr = inet_addr(argvStr[1].c_str());
 	s_add.sin_port = htons(portnum);
 	printf("s_addr = %#x ,port : %#x\r\n", s_add.sin_addr.s_addr, s_add.sin_port);
-    if(-1 == connect(cfd,(struct sockaddr *)(&s_add), sizeof(struct sockaddr)))
+    while(-1 == connect(cfd,(struct sockaddr *)(&s_add), sizeof(struct sockaddr)))
 	{
+        if(errno == EINTR)
+            continue;
 	    printf("connect fail !\r\n");
 	    exit(EXIT_FAILURE);
 	}

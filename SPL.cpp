@@ -13,9 +13,11 @@ void SPL_initServer(string (&argvStr)[maxArgc])
 	    exit(EXIT_FAILURE);
 	}
     
-    int flag = 1,len = sizeof(int); 
-    if(setsockopt(sfp, SOL_SOCKET, SO_REUSEADDR, &flag, len) == -1) 
-   	{ 
+    int flag = 1, len = sizeof(int); 
+    while(setsockopt(sfp, SOL_SOCKET, SO_REUSEADDR, &flag, len) == -1) 
+   	{
+        if(errno == EINTR)
+            continue;
       	perror("setsockopt"); 
      	exit(EXIT_FAILURE);
 	}  
@@ -24,25 +26,28 @@ void SPL_initServer(string (&argvStr)[maxArgc])
 	s_add.sin_family = AF_INET;
 	s_add.sin_addr.s_addr = htonl(INADDR_ANY);
 	s_add.sin_port = htons(portnum);
-    
-	
 
-    if(-1 == bind(sfp,(struct sockaddr *)(&s_add), sizeof(struct sockaddr)))
+    while(-1 == bind(sfp,(struct sockaddr *)(&s_add), sizeof(struct sockaddr)))
 	{
+        if(errno == EINTR)
+            continue;
 	    printf("bind fail !\r\n");
 	    exit(EXIT_FAILURE);
 	}
  
-	if(-1 == listen(sfp,5))
+	while(-1 == listen(sfp,5))
 	{
+        if(errno == EINTR)
+            continue;
 	    printf("listen fail !\r\n");
 	    exit(EXIT_FAILURE);
 	}
 
     sin_size = sizeof(sockaddr_in);
-	nfp = accept(sfp, (sockaddr *)(&c_add), &sin_size);
-	if(-1 == nfp)
+	while(-1 == (nfp = accept(sfp, (sockaddr *)(&c_add), &sin_size)))
 	{
+        if(errno == EINTR)
+            continue;
 		printf("accept fail !\r\n");
 		exit(EXIT_FAILURE);
 	}
