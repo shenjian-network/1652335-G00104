@@ -42,19 +42,47 @@ int myRead(int fd,void* buffer,int size);
 // 写数据
 int myWrite(int fd,void* buffer,int size);
 
-typedef unsigned int seq_nr;    //发送序号
+//typedef unsigned int seq_nr;    //发送序号
+
+struct seq_nr
+{
+    unsigned int seq_nr_content;
+    seq_nr() {}
+    seq_nr(const unsigned int _seq_nr_content) : seq_nr_content(htonl(_seq_nr_content)) {}
+    operator unsigned int() const
+    {
+        return ntohl(seq_nr_content);
+    }
+};
+
 typedef struct {unsigned char data[MAX_PKT];} packet; //数据包，纯数据
-typedef enum {
-    data, //数据包
-    ack,  //确认包
-    nak   //否定确认包
-} frame_kind; //帧类型枚举量
+
+/*typedef enum
+{
+    data,
+    ack,
+    nak
+}frame_kind;*/
+
+struct frame_kind
+{
+    unsigned int frame_kind_content;
+    frame_kind() {}
+    frame_kind(const unsigned int & _frame_kind_content) : frame_kind_content(htonl(_frame_kind_content)) {}
+    operator unsigned int() const
+    {
+        return ntohl(frame_kind_content);
+    }
+};
+const unsigned int data = 0, ack = 1, nak = 2;
+
 typedef struct {
     frame_kind kind; //帧类型
     seq_nr seq;  //发送序号
     seq_nr ack;  //接收序号
     packet     info; //数据包
 } frame; //帧结构
+
 typedef enum
 {
     frame_arrival,
