@@ -36,6 +36,7 @@ void PL_receive_SIG_D2P()
 {
     if (countReady > 0)
     {
+        cout << "countReady:" << countReady << endl;
         countReady--;
         static int count_D2P = 0;
         static string plStr[2] = {string("sdl"), string("rdl")};

@@ -40,7 +40,6 @@ static void from_network_layer(packet* p){
     if(n_read < 0){
         die("read failed");
     }
-
    
     set_lock(fd, F_UNLCK);
     close(fd);
@@ -61,6 +60,7 @@ static void to_physical_layer(frame* f){
         die("sdl open failed");
     }
 
+    inc(cnt_to_phy);
     int n_write = write(fd, (const void*)f, sizeof(frame));
     if(n_write < 0){
         die("sdl write failed");
