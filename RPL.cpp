@@ -3,7 +3,7 @@ static int cfd;
 
 void RPL_initClient(string (&argvStr)[maxArgc])
 {
-    //RPL×÷Îªclient¶ËÁ¬½Ó
+    //RPLä½œä¸ºclientç«¯è¿žæŽ¥
     struct sockaddr_in s_add,c_add;
     unsigned short portnum = atoi(argvStr[2].c_str());  //port number
     cout << "Ip: " << argvStr[2].c_str() << " Port: " << portnum << endl; 
@@ -41,8 +41,8 @@ void RPL(int* pidArr, string (&argvStr)[maxArgc])
     {
         //sleep(1);
         /*
-        ÅÐ¶ÏÊÇ·ñÓÐÖ¡µ½´ïÊý¾Ý¿ÉÒÔ¶Á£¬Èç¹ûÓÐ£¬·¢ËÍ¸øSDLÒ»¸öframe_arrivaÐÅºÅ
-        ÅÐ¶ÏÊÇ·ñÓÐÖ¡
+        åˆ¤æ–­æ˜¯å¦æœ‰å¸§åˆ°è¾¾æ•°æ®å¯ä»¥è¯»ï¼Œå¦‚æžœæœ‰ï¼Œå‘é€ç»™SDLä¸€ä¸ªframe_arrivaä¿¡å·
+        åˆ¤æ–­æ˜¯å¦æœ‰å¸§
         */
         FD_ZERO(&readfds);
 	    FD_SET(cfd, &readfds);
@@ -52,6 +52,6 @@ void RPL(int* pidArr, string (&argvStr)[maxArgc])
             preparePLData();
             kill(pidArr[1], SIG_FRAME_ARRIVAL);
         }
-        //·ñÔòÊÇ±»SDLÖÐ¶Ï£¬Ò»ÖÖÊÇD2P£¬¾ÍÊÇÒªÐ´Êý¾Ý£¬ÁíÒ»ÖÖÊÇP2D£¬¾ÍÊÇÒªÊÕÊý¾Ý
+        //å¦åˆ™æ˜¯è¢«SDLä¸­æ–­ï¼Œä¸€ç§æ˜¯D2Pï¼Œå°±æ˜¯è¦å†™æ•°æ®ï¼Œå¦ä¸€ç§æ˜¯P2Dï¼Œå°±æ˜¯è¦æ”¶æ•°æ®
     }
 }
