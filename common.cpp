@@ -51,12 +51,12 @@ void set_lock(int fd, int type)
 }
 
 // 读入数据
-int myRead(int fd, char *buffer, int size)
+int myRead(int fd, void *buffer, int size)
 {
     int RecvSize;
     while (1)
     {
-        RecvSize = read(fd, buffer, size);
+        RecvSize = read(fd, (char*)buffer, size);
         if (RecvSize < 0)
         {
             if ((errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN))
@@ -77,12 +77,12 @@ int myRead(int fd, char *buffer, int size)
 }
 
 // 写数据
-int myWrite(int fd, const char *buffer, int size)
+int myWrite(int fd, void *buffer, int size)
 {
     int SendSize; 
     while (1)
     {
-        SendSize=write(fd, buffer, size);
+        SendSize=write(fd, (char*)buffer, size);
         if (SendSize <= 0)
         {
             if ((errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN))
