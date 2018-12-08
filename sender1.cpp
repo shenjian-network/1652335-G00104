@@ -14,9 +14,6 @@
 #include <fcntl.h>
 #include "common.h"
 #include "SPL.h"
-#include "snl.h"
-#include "sdl.h"
-
 
 using namespace std;
 
@@ -101,7 +98,7 @@ void setproctitle(const char *fmt, ...)
 
 static int commShm(int size, int shmflag)
 {
-	key_t key = ftok(PATHNAME, PROJ_ID); // 鑾峰彇key 
+	key_t key = ftok(PATHNAME, PROJ_ID); // 获取key 
 	if(key == -1){
 		perror("ftok");
 		return -1;
@@ -167,7 +164,18 @@ void prepareProc(int *pidArr, const procState & procS, const int shmid)
 	sleep(1);
 }
 
-
+/*-----------*/
+void SNL(int* pidArr)
+{
+	while(1)
+		;
+}
+void SDL(int* pidArr)
+{
+	while(1)
+		;
+}
+/*-----------*/
 
 void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc])
 {
@@ -182,7 +190,7 @@ void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc])
 		{
 			procS = eSNL;
 			prepareProc(pidArr, procS, shmid);
-			snl(pidArr);
+			SNL(pidArr);
 			exit(0);
 		}
 		else
@@ -197,13 +205,23 @@ void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc])
 	{
 		procS = eSDL;
 		prepareProc(pidArr, procS, shmid);
-		sdl(pidArr);
+		SDL(pidArr);
 		exit(0);
 	}
 }
 
+void checkArgc(int argc)
+{
+	if(argc != 2)
+	{
+		cerr << "参数个数不对" << endl;
+		exit(1);
+	}
+}
 int main(int argc, char* argv[])
 {
+	checkArgc(argc);
+	
 	createDaemon();
 
 	string argvStr[maxArgc];
