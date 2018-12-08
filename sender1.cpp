@@ -1,18 +1,7 @@
 #include "mainProc.h"
 #include "SPL.h"
-
-/*-----------*/
-void SNL(int* pidArr)
-{
-	while(1)
-		;
-}
-void SDL(int* pidArr)
-{
-	while(1)
-		;
-}
-/*-----------*/
+#include "snl.h"
+#include "sdl.h"
 
 void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool procType)
 {
@@ -27,7 +16,7 @@ void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool
 		{
 			procS = eNL;
 			prepareProc(pidArr, procS, shmid, procType);
-			SNL(pidArr);
+			snl(pidArr);
 			exit(0);
 		}
 		else
@@ -42,7 +31,7 @@ void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool
 	{
 		procS = eDL;
 		prepareProc(pidArr, procS, shmid, procType);
-		SDL(pidArr);
+		sdl(pidArr);
 		exit(0);
 	}
 }

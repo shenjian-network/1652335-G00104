@@ -1,18 +1,8 @@
 #include "mainProc.h"
 #include "RPL.h"
+#include "rnl.h"
+#include "rdl.h"
 
-/*-----------*/
-void RNL(int* pidArr)
-{
-	while(1)
-		;
-}
-void RDL(int* pidArr)
-{
-	while(1)
-		;
-}
-/*-----------*/
 
 void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool procType)
 {
@@ -27,7 +17,7 @@ void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool
 		{
 			procS = eNL;
 			prepareProc(pidArr, procS, shmid, procType);
-			RNL(pidArr);
+			rnl(pidArr);
 			exit(0);
 		}
 		else
@@ -42,7 +32,7 @@ void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool
 	{
 		procS = eDL;
 		prepareProc(pidArr, procS, shmid, procType);
-		RDL(pidArr);
+		rdl(pidArr);
 		exit(0);
 	}
 }
