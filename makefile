@@ -12,4 +12,4 @@ $(Target1):%:%.cpp $(HEADFILE1) $(INCLUDEFILE1)
 $(Target2):%:%.cpp $(HEADFILE2) $(INCLUDEFILE2)
 	$(CC) -o $@ $< $(HEADFILE2) $(INCLUDEFILE2)
 clean:
-	-rm -rf $(Target1) $(Target2)
+	-rm -rf $(Target1) $(Target2) *.share.*

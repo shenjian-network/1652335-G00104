@@ -6,7 +6,7 @@ void RPL_initClient(string (&argvStr)[maxArgc])
     //RPL作为client端连接
     struct sockaddr_in s_add,c_add;
     unsigned short portnum = atoi(argvStr[2].c_str());  //port number
-    cout << "Ip: " << argvStr[2].c_str() << " Port: " << portnum << endl; 
+    cout << "Ip: " << argvStr[1].c_str() << " Port: " << portnum << endl; 
     cfd = socket(AF_INET, SOCK_STREAM, 0);
 	if(-1 == cfd)
 	{

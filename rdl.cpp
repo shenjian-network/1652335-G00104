@@ -14,7 +14,7 @@ static char name1[50];
 static char name2[50];
 
 void from_physical_layer(frame* f){
-    sprintf(name1, "sdl.datalink_physical.share.%d", cnt_from_phy);
+    sprintf(name1, "rdl.datalink_physical.share.%d", cnt_from_phy);
     int fd = open(name1, 0777);
     if(fd < 0){
         die("sdl open failed");
@@ -26,7 +26,7 @@ void from_physical_layer(frame* f){
 }
 
 void to_network_layer(packet* p){
-    sprintf(name2, "sdl.datalink_physical.share.%d", cnt_to_net);
+    sprintf(name2, "rnl.network_datalink.share.%d", cnt_to_net);
     int fd = open(name2, 0777);
     if(fd < 0){
         die("sdl open failed");

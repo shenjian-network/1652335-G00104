@@ -14,14 +14,14 @@ static char buffer[BLOCK + 1];
 static char name[50];
 
 // 计数器
-static int cnt = 1;
+static int cnt = 0;
 
 
 /*
  * 一旦收到38信号，读文件，然后追加写入
  */
 static void receive_sig38(int signum){
-    sprintf(name, "sdl.network_datalink.share.%d", cnt);
+    sprintf(name, "rnl.network_datalink.share.%d", cnt);
     int fd = open(name, O_RDONLY);
     if(fd < 0){
         die("rnl open failed");

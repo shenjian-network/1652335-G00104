@@ -13,7 +13,7 @@ void preparePLData()
     /*
     PL:从对端接收数据，并放入文件中
     */
-    static string plStr[2] = {string("spl"), string("sdl")};
+    static string plStr[2] = {string("spl"), string("rpl")};
     static string file_name_pre = plStr[procType] + ".physical_datalink.share.";
     static char countStr[10];
     sprintf(countStr, "%d", countRecv);
@@ -38,7 +38,7 @@ void PL_receive_SIG_D2P()
     {
         countReady--;
         static int count_D2P = 0;
-        static string plStr[2] = {string("spl"), string("sdl")};
+        static string plStr[2] = {string("sdl"), string("rdl")};
         static string file_name_pre = plStr[procType] + ".datalink_physical.share.";
         static char countStr[10];
         sprintf(countStr, "%d", count_D2P);
@@ -47,7 +47,7 @@ void PL_receive_SIG_D2P()
         int fd_datalink_physical = open(file_name.c_str(), O_RDONLY);
         if (fd_datalink_physical == -1)
         {
-            cerr << "open file " << file_name << " error!";
+            cerr << "open file " << file_name << " error!" << endl;
             return;
         }
         frame frameToSend;

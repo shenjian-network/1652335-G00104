@@ -27,7 +27,7 @@ static int flag = 0;
  *  sdl将读到的内容写入到packet里面，
  */
 static void from_network_layer(packet* p){
-    sprintf(name, "network_datalink.share.%d", cnt);
+    sprintf(name, "snl.network_datalink.share.%d", cnt);
     int fd = open(name, O_RDONLY);
     if(fd < 0){
         return;
@@ -56,12 +56,12 @@ static void from_network_layer(packet* p){
  */
 static void to_physical_layer(frame* f){
     sprintf(name2, "sdl.datalink_physical.share.%d", cnt_to_phy);
-    int fd = open(name2, 0777);
+    int fd = open(name2, O_CREAT | O_WRONLY, 0777);
     if(fd < 0){
         die("sdl open failed");
     }
 
-    int n_write = write(fd, f, sizeof(frame));
+    int n_write = write(fd, (const void*)f, sizeof(frame));
     if(n_write < 0){
         die("sdl write failed");
     }

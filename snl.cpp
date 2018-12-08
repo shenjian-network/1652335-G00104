@@ -22,7 +22,7 @@ static char buffer[BLOCK + 1];
 static char name[50];
 
 // 计数器
-static int count = 1;
+static int count = 0;
 
 
 static int flag = 0;
@@ -53,7 +53,7 @@ static void create_file(){
             flag = !flag;
     }
 
-    sprintf(name, "network_datalink.share.%d", count);
+    sprintf(name, "snl.network_datalink.share.%d", count);
     inc(count);
     fd = creat(name, 0777);
 
@@ -72,8 +72,7 @@ static void create_file(){
 
 static void receive_sig38(int signum){
     // 判断文件是否存在
-    printf("%d\n", count);
-    sprintf(name, "network_datalink.share.%d", count);
+    sprintf(name, "snl.network_datalink.share.%d", count);
     if(access(name, F_OK) != -1){
         // 之前一定是DISABLE 且 一定上过锁
         if(network_enabled == DISALBE){
@@ -111,7 +110,7 @@ void snl(int* pidArr){
     signal(39, receive_sig39);
 
     // 一开始要主动调用一次
-    receive_sig38(0);
+    receive_sig38(0);                                                                                            
     // 主循环
     while(true){
         sleep(1);
