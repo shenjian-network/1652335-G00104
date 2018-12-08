@@ -1,10 +1,15 @@
 CC=g++
-Target = sender1
+Target1 = sender1
+Target2 = receiver1
 .PHONY: all clean 
-HEADFILE= common.h sdl.h snl.h SPL.h
-INCLUDEFILE= common.cpp sdl.cpp snl.cpp SPL.cpp 
-all:$(Target) 
-$(Target):%:%.cpp $(HEADFILE) $(INCLUDEFILE)
-	$(CC) -o $@ $< $(HEADFILE) $(INCLUDEFILE)
+HEADFILE1= common.h sdl.h snl.h SPL.h mainProc.h PL.h
+INCLUDEFILE1= common.cpp sdl.cpp snl.cpp SPL.cpp mainProc.cpp PL.cpp
+HEADFILE2= common.h mainProc.h PL.h RPL.h
+INCLUDEFILE2= common.cpp mainProc.cpp PL.cpp RPL.cpp 
+all:$(Target1) $(Target2)
+$(Target1):%:%.cpp $(HEADFILE1) $(INCLUDEFILE1)
+	$(CC) -o $@ $< $(HEADFILE1) $(INCLUDEFILE1)
+$(Target2):%:%.cpp $(HEADFILE2) $(INCLUDEFILE2)
+	$(CC) -o $@ $< $(HEADFILE2) $(INCLUDEFILE2)
 clean:
-	-rm -rf $(Target)
+	-rm -rf $(Target1) $(Target2)

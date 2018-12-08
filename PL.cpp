@@ -1,13 +1,13 @@
 #include "PL.h"
 static int countRecv;
 
-void preparePLData(bool PL_type)
+void preparePLData()
 {
     /*
     PL:从对端接收数据，并放入文件中
     */
     static string plStr[2] = {string("spl"), string("sdl")};
-    static string file_name_pre = plStr[PL_type] + "physical_datalink.share.";
+    static string file_name_pre = plStr[procType] + ".physical_datalink.share.";
     static char countStr[10];
     sprintf(countStr, "%d", countRecv);
     string file_name = file_name_pre + countStr;
@@ -28,7 +28,8 @@ void preparePLData(bool PL_type)
 void PL_receive_SIG_D2P(int, siginfo_t*, void*)//收到SIG_D2P信号，将得到的数据发送
 {
     static int count_D2P = 0;
-    static string file_name_pre = "datalink_physical.share.";
+    static string plStr[2] = {string("spl"), string("sdl")};
+    static string file_name_pre = plStr[procType] + ".datalink_physical.share.";
     static char countStr[10];
     sprintf(countStr, "%d", count_D2P);
     string file_name = file_name_pre + countStr;

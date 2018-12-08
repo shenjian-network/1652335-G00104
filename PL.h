@@ -20,7 +20,8 @@ const int MAX_FRAME_SIZE = 1036;
 const int ACK_SIZE = 12;
 const int NAK_SIZE = 12;
 static int socketFd;
-void preparePLData(bool PL_type);
+static int procType;
+void preparePLData();
 void PL_receive_SIG_D2P(int, siginfo_t*, void*);
 void PL_init_signaction();
 #endif

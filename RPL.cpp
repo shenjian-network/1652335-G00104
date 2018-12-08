@@ -6,12 +6,12 @@ void RPL_initClient(string (&argvStr)[maxArgc])
     //RPL作为client端连接
     struct sockaddr_in s_add,c_add;
     unsigned short portnum = atoi(argvStr[2].c_str());  //port number
-    cout << "Ip: " << argv[1] << " Port: " << portnum << endl; 
+    cout << "Ip: " << argvStr[2].c_str() << " Port: " << portnum << endl; 
     cfd = socket(AF_INET, SOCK_STREAM, 0);
 	if(-1 == cfd)
 	{
 	    printf("socket fail ! \r\n");
-	    return -1;
+	    exit(EXIT_FAILURE);
 	}
     bzero(&s_add,sizeof(struct sockaddr_in));
 	s_add.sin_family = AF_INET;
@@ -21,15 +21,16 @@ void RPL_initClient(string (&argvStr)[maxArgc])
     if(-1 == connect(cfd,(struct sockaddr *)(&s_add), sizeof(struct sockaddr)))
 	{
 	    printf("connect fail !\r\n");
-	    return -1;
+	    exit(EXIT_FAILURE);
 	}
 	printf("connect ok !\r\n");
 }
 
-void RPL_init_sigaction()
+void RPL_init_signaction()
 {
     PL_init_signaction();
 }
+
 void RPL(int* pidArr, string (&argvStr)[maxArgc])
 {
     RPL_init_signaction();
@@ -48,7 +49,7 @@ void RPL(int* pidArr, string (&argvStr)[maxArgc])
 	    int select_res = select(cfd + 1, &readfds, NULL, NULL, NULL);
         if(select_res > 0)
         {
-            preparePLData(1);
+            preparePLData();
             kill(pidArr[1], SIG_FRAME_ARRIVAL);
         }
         //否则是被SDL中断，一种是D2P，就是要写数据，另一种是P2D，就是要收数据

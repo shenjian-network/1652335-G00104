@@ -78,7 +78,7 @@ void SPL(int* pidArr, string (&argvStr)[maxArgc])
 	    int select_res = select(nfp + 1, &readfds, NULL, NULL, NULL);
         if(select_res > 0)
         {
-            preparePLData(0);
+            preparePLData();
             kill(pidArr[1], SIG_FRAME_ARRIVAL);
         }
         //否则是被SDL中断，一种是D2P，就是要写数据，另一种是P2D，就是要收数据
