@@ -77,14 +77,13 @@ void SPL_init_sigaction()
     PL_init_signaction();
 }
 
-void SPL(int* pidArr, string (&argvStr)[maxArgc])
+void SPL(int* pidArr, string (&argvStr)[maxArgc], int procType)
 {
     SPL_init_sigaction();
     SPL_initServer(argvStr);
     kill(pidArr[0], SIG_ALL_START);
     cout << "KILL DONE!!!!!!!!!! " << pidArr[0] << endl;
 
-    socketFd = nfp;
     fd_set readfds,writefds;
     while(1)
     {
@@ -100,12 +99,12 @@ void SPL(int* pidArr, string (&argvStr)[maxArgc])
         if(select_res > 0)
         {
             if(FD_ISSET(nfp,&readfds)){
-                preparePLData();
+                preparePLData(nfp, procType);
                 kill(pidArr[1], SIG_FRAME_ARRIVAL);
             }
             if(FD_ISSET(nfp,&writefds))
             {
-                PL_receive_SIG_D2P();
+                PL_receive_SIG_D2P(nfp, procType);
             }
         }
         //否则是被SDL中断，一种是D2P，就是要写数据，另一种是P2D，就是要收数据

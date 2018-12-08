@@ -24,7 +24,7 @@ void forkReceiver(int & shmid, procState & procS, string (&argvStr)[maxArgc], bo
 		{
 			procS = ePL;
 			prepareProc(pidArr, procS, shmid, procType);
-			RPL(pidArr, argvStr);
+			RPL(pidArr, argvStr, procType);
 			exit(0);
 		}
 	}
@@ -39,7 +39,7 @@ void forkReceiver(int & shmid, procState & procS, string (&argvStr)[maxArgc], bo
 
 int main(int argc, char* argv[])
 {
-	procType = 1;
+	int procType = 1;
 
 	PROJ_ID = procType ? 666 : 233;
 

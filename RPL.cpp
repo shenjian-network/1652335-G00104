@@ -33,11 +33,10 @@ void RPL_init_signaction()
     PL_init_signaction();
 }
 
-void RPL(int* pidArr, string (&argvStr)[maxArgc])
+void RPL(int* pidArr, string (&argvStr)[maxArgc], int procType)
 {
     RPL_init_signaction();
     RPL_initClient(argvStr);
-    socketFd = cfd;
     fd_set readfds,writefds;
     while(1)
     {
@@ -53,12 +52,12 @@ void RPL(int* pidArr, string (&argvStr)[maxArgc])
         if(select_res > 0)
         {
             if(FD_ISSET(cfd,&readfds)){
-                preparePLData();
+                preparePLData(cfd, procType);
                 kill(pidArr[1], SIG_FRAME_ARRIVAL);
             }
             if(FD_ISSET(cfd,&writefds))
             {
-                PL_receive_SIG_D2P();
+                PL_receive_SIG_D2P(cfd, procType);
             }
         }
         //否则是被SDL中断，一种是D2P，就是要写数据，另一种是P2D，就是要收数据

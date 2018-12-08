@@ -9,7 +9,7 @@ void SIG_D2P_Handle(int sigv)
     return;
 }
 
-void preparePLData()
+void preparePLData(int socketFd, int procType)
 {
     /*
     PL:从对端接收数据，并放入文件中
@@ -33,7 +33,7 @@ void preparePLData()
 }
 
 //to_physical_layer就是写数据，之后就会kill(PL, SIG_D2P)
-void PL_receive_SIG_D2P()
+void PL_receive_SIG_D2P(int socketFd, int procType)
 {
     if (countReady > 0)
     {

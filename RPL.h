@@ -2,5 +2,5 @@
 #define RPL_H_
 #include "PL.h"
 
-void RPL(int* pidArr, string (&argvStr)[maxArgc]);
+void RPL(int* pidArr, string (&argvStr)[maxArgc], int procType);
 #endif

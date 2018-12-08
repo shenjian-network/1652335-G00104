@@ -3,7 +3,7 @@
 #include "snl.h"
 #include "sdl.h"
 
-void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool procType)
+void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], int procType)
 {
 	shmid = createShm(1024);
 	int *pidArr = (int*)shmat(shmid, NULL, 0);
@@ -25,7 +25,7 @@ void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool
 			procS = ePL;
 			prepareProc(pidArr, procS, shmid, procType);
 			cout << "spl prepare done" << endl;
-			SPL(pidArr, argvStr);
+			SPL(pidArr, argvStr, procType);
 			exit(0);
 		}
 	}
@@ -41,7 +41,7 @@ void forkSender(int & shmid, procState & procS, string (&argvStr)[maxArgc], bool
 
 int main(int argc, char* argv[])
 {
-	procType = 0;
+	int procType = 0;
 
 	PROJ_ID = procType ? 666 : 233;
 
