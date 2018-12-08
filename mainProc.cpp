@@ -4,6 +4,7 @@ void workDone(const int shmid, const procState & procS)
 {
 	if(procS == eDL)
 	{
+		cout << "workDone" << endl;
 		destroyShm(shmid);
 		for (int i = 0; environ[i] != NULL; i++)
         	free(environ[i]);
@@ -16,13 +17,15 @@ void setproctitle_init(int argc, char **argv, char **envp)
     int i;
     for (i = 0; envp[i] != NULL; i++) // calc envp num
         continue;
+
     environ = (char **) malloc(sizeof (char *) * (i + 1)); // malloc envp pointer
 
     for (i = 0; envp[i] != NULL; i++)
     {
-        environ[i] = (char *)malloc(sizeof(char) * strlen(envp[i]));
+        environ[i] = (char *)malloc(sizeof(char) * (strlen(envp[i]) + 1));
         strcpy(environ[i], envp[i]);
     }
+
     environ[i] = NULL;
     g_main_Argv = argv;
     if (i > 0)
