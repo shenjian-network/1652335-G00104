@@ -59,7 +59,6 @@ static void from_network_layer(packet *p)
         break;
     }
     //memcpy(p->data, buffer, MAX_PKT);
-    kill(snl_pid, 38);
 }
 
 /*
@@ -81,7 +80,6 @@ static void to_physical_layer(frame *f)
         die("sdl write failed");
     }
     close(fd);
-
     kill(spl_pid, SIG_D2P);
 }
 
@@ -113,6 +111,9 @@ void sdl(int *pidArr)
             }
         }
         else 
-            cout << "ack frame arrival" << endl;
+        {
+            cout << "ack frame arrival" << endl;    
+            kill(snl_pid, SIG_ENABLE_NETWORK_LAYER);    
+        }
     }
 }

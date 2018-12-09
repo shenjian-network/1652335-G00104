@@ -109,8 +109,7 @@ void rdl(int *pidArr)
                 for(;s>=0&&data_tmp_buffer[s]==0;s--);
                 s++;
                 to_network_layer(data_tmp_buffer,s);
-                printf("???\n");
-                to_physical_layer(&S);
+                printf("all end\n");
                 to_physical_layer(&S);
                 while (1)
                     sleep(1);
@@ -121,6 +120,7 @@ void rdl(int *pidArr)
                 {
                     begin_flag = 1;
                     memcpy(data_tmp_buffer,&r.info,1024);
+                    to_physical_layer(&S);
                     continue;
                 }
                 to_network_layer(data_tmp_buffer);
