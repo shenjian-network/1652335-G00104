@@ -96,9 +96,19 @@ void PL_receive_SIG_D2P(int socketFd, int procType)
     }
 }
 
+static void setMask(int sigv,void(*si)(int x))
+{
+    struct sigaction newact, oldact;
+	newact.sa_handler = si;
+	sigemptyset(&newact.sa_mask);
+	sigaddset(&newact.sa_mask, SIG_D2P);
+	newact.sa_flags = 0;
+    sigaction(sigv, &newact, &oldact);
+}
+
 void PL_init_signaction()
 {
-    signal(SIG_D2P, SIG_D2P_Handle);
+    setMask(SIG_D2P, SIG_D2P_Handle);
 }
 
 double dRand()

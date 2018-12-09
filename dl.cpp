@@ -110,14 +110,25 @@ void wait_for_event(event_type* event)
     return;
 }
 
-
+static void setMask(int sigv,void(*si)(int x))
+{
+    struct sigaction newact, oldact;
+	newact.sa_handler = si;
+	sigemptyset(&newact.sa_mask);
+	sigaddset(&newact.sa_mask, SIG_CHK_ERR);
+    sigaddset(&newact.sa_mask, SIG_FRAME_ARRIVAL);
+    sigaddset(&newact.sa_mask, SIG_NETWORK_LAYER_READY);
+    sigaddset(&newact.sa_mask, SIGALRM);
+	newact.sa_flags = 0;
+    sigaction(sigv, &newact, &oldact);
+}
 
 void SDL_init_signaction()
 {
-    signal(SIG_CHK_ERR,sigHandle);
-    signal(SIG_FRAME_ARRIVAL,sigHandle);
-    signal(SIG_NETWORK_LAYER_READY,sigHandle);
-    signal(SIGALRM,sigHandle);
+    setMask(SIG_CHK_ERR,sigHandle);
+    setMask(SIG_FRAME_ARRIVAL,sigHandle);
+    setMask(SIG_NETWORK_LAYER_READY,sigHandle);
+    setMask(SIGALRM,sigHandle);
     struct itimerval one_timer;
 	one_timer.it_interval.tv_sec=0;
     one_timer.it_interval.tv_usec=1;

@@ -1,5 +1,4 @@
 #include "snl.h"
-
 // SNL对应的进程号
 static pid_t snl_pid;
 
@@ -99,11 +98,19 @@ static void StartHandle(int sigv){
     snlStart=1;
 }
 
+static void NL_SIGNAL_INIT()
+{
+    setMask(SIG_DISABLE_NETWORK_LAYER,receive_sig39);
+    setMask(SIG_ENABLE_NETWORK_LAYER,receive_sig38);
+    setMask(SIG_ALL_START,StartHandle);
+    //setMask(SIG_NETWORK_READ,receive_datalink);
+    return;
+}
+
 void snl(int* pidArr, std::string (&argvStr)[maxArgc]){
     // 注册
     //signal(38, receive_sig38);
-    signal(38, receive_sig38);
-    signal(SIG_ALL_START, StartHandle);
+    NL_SIGNAL_INIT();
     while(1)
     {
         if(snlStart)

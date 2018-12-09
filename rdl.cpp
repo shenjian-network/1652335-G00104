@@ -14,11 +14,12 @@ static char name2[50];
 
 void from_physical_layer(frame *f)
 {
+    printf("%d\n",cnt_from_phy);
     sprintf(name1, "rpl.physical_datalink.share.%d", cnt_from_phy);
     int fd = open(name1, O_RDONLY);
     if (fd < 0)
     {
-        die("rdl open failed");
+        die("rdl open failed1");
     }
     inc(cnt_from_phy);
     int n_read = myRead(fd, f, ACK_SIZE);
@@ -32,10 +33,10 @@ void from_physical_layer(frame *f)
 void to_network_layer(char* myBuffer,int size=BLOCK)
 {
     sprintf(name2, "rdl.datalink_network.share.%d", cnt_to_net);
-    int fd = open(name2, O_CREAT | O_WRONLY, 0777);
+    int fd = open(name2, O_CREAT | O_TRUNC|O_WRONLY, 0777);
     if (fd < 0)
     {
-        die("rdl open failed");
+        die("rdl open failed2");
     }
     inc(cnt_to_net);
     int n_write = myWrite(fd, (void*)myBuffer, size);
@@ -78,8 +79,9 @@ void rdl(int *pidArr)
             from_physical_layer(&r);
             if (!judgeClose(&r))
             {
-                int s=0;
-                for(;data_tmp_buffer[s]!=0&&s<1024;s++);
+                int s=1023;
+                for(;s>=0&&data_tmp_buffer[s]==0;s--);
+                s++;
                 to_network_layer(data_tmp_buffer,s);
                 printf("???\n");
                 while (1)
