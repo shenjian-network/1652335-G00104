@@ -33,6 +33,28 @@ void RPL_init_signaction()
     PL_init_signaction();
 }
 
+void RPL_SendSig_Proc(int RNL_pid)
+{
+    if(HW_ID == 1)
+    {
+        kill(RNL_pid, SIG_FRAME_ARRIVAL);
+    }
+    else if(HW_ID == 2)
+    {
+        kill(RNL_pid, SIG_FRAME_ARRIVAL);
+    }
+    else if(HW_ID >= 3)
+    {
+        double r = dRand();
+        if(r < 0.03)
+            kill(RNL_pid, SIG_CHK_ERR);
+        else if(r < 0.06)
+            ;
+        else
+            kill(RNL_pid, SIG_FRAME_ARRIVAL);
+    }
+}
+
 void RPL(int* pidArr, string (&argvStr)[maxArgc], int procType)
 {
     RPL_init_signaction();
@@ -53,11 +75,12 @@ void RPL(int* pidArr, string (&argvStr)[maxArgc], int procType)
         {
             if(FD_ISSET(cfd,&readfds)){
                 preparePLData(cfd, procType);
-                cout << pidArr[1] << endl;
-                kill(pidArr[1], SIG_FRAME_ARRIVAL);
+                //cout << pidArr[1] << endl;
+                RPL_SendSig_Proc(pidArr[1]);
             }
             if(FD_ISSET(cfd,&writefds))
             {
+
                 PL_receive_SIG_D2P(cfd, procType);
             }
         }

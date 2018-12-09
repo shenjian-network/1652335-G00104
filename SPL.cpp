@@ -77,6 +77,29 @@ void SPL_init_sigaction()
     PL_init_signaction();
 }
 
+void SPL_SendSig_Proc(int SNL_pid)
+{
+    if(HW_ID == 1)
+    {
+        kill(SNL_pid, SIG_FRAME_ARRIVAL);
+    }
+    else if(HW_ID == 2)
+    {
+        kill(SNL_pid, SIG_FRAME_ARRIVAL);
+    }
+    else if(HW_ID >= 3)
+    {
+        double r = dRand();
+        if(r < 0.03)
+            kill(SNL_pid, SIG_CHK_ERR);
+        else if(r < 0.06)
+            ;
+        else
+            kill(SNL_pid, SIG_FRAME_ARRIVAL);
+    }
+    //HW_ID == 6 需要吗？
+}
+
 void SPL(int* pidArr, string (&argvStr)[maxArgc], int procType)
 {
     SPL_init_sigaction();
@@ -100,7 +123,7 @@ void SPL(int* pidArr, string (&argvStr)[maxArgc], int procType)
         {
             if(FD_ISSET(nfp,&readfds)){
                 preparePLData(nfp, procType);
-                kill(pidArr[1], SIG_FRAME_ARRIVAL);
+                SPL_SendSig_Proc(pidArr[1]);
             }
             if(FD_ISSET(nfp,&writefds))
             {
