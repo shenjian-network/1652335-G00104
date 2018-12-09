@@ -15,7 +15,7 @@ typedef struct{
 }time_node;
 
 const int timeout_interval=100000;
-const int timeout_ack_interval=30000;
+const int timeout_ack_interval=500;
 
 
 void start_ack_timer();

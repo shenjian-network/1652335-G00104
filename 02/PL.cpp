@@ -17,8 +17,12 @@ void SIG_D2P_Handle(int sigv)
 
 void delay()
 {
-    for(int i = 0; i < DELAY_TIMES; ++i)
-        ;
+    sigset_t blockset;
+    sigemptyset(&blockset);
+    sigaddset(&blockset, SIG_D2P);
+    sigprocmask(SIG_BLOCK, &blockset,NULL);
+    sleep(1);
+    sigprocmask(SIG_UNBLOCK, &blockset,NULL);
 }   
 
 void preparePLData(int socketFd, int procType)
@@ -47,7 +51,10 @@ void preparePLData(int socketFd, int procType)
     else
     {  
         if(frameRecv.kind == ack && dRand() < 0.1)
+        {
+            cout << "delay" << endl;
             delay();
+        }
     }
     
     /*将数据放入文件*/
