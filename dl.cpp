@@ -108,6 +108,8 @@ void wait_for_event(event_type* event)
     return;
 }
 
+
+
 void SDL_init_signaction()
 {
     signal(SIG_CHK_ERR,sigHandle);

@@ -4,6 +4,7 @@ static int countReady = 0;
 
 void SIG_D2P_Handle(int sigv)
 {
+    printf("1\n");
     countReady++;
     return;
 }

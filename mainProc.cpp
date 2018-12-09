@@ -62,7 +62,7 @@ void setproctitle(const char *fmt, ...)
 
 static int commShm(int size, int shmflag)
 {
-	key_t key = ftok(PATHNAME, PROJ_ID); //È¡key 
+	key_t key = PROJ_ID; //È¡key 
 	if(key == -1){
 		perror("ftok");
 		return -1;

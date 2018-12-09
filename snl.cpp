@@ -59,7 +59,7 @@ static void create_file(){
     if(fd < 0){
         die("open failed");
     }
-    
+    printf("add lock begin write\n");
     set_lock(fd, F_WRLCK);
     int n_write = myWrite(fd, buffer, n_read);
     set_lock(fd, F_UNLCK);
@@ -95,11 +95,24 @@ static void receive_sig39(int signum){
     set_lock(fd, F_WRLCK);          
 }
 
+static int snlStart=0;
+static void StartHandle(int sigv){
+    snlStart=1;
+}
+
 void snl(int* pidArr, std::string (&argvStr)[maxArgc]){
     // 注册
     signal(38, receive_sig38);
-    signal(39, receive_sig39);
-
+    signal(38, receive_sig38);
+    signal(SIG_ALL_START, StartHandle);
+    while(1)
+    {
+        if(snlStart)
+            break;
+        else{
+            sleep(1);
+        }
+    }
     sdl_pid = pidArr[1];
     snl_pid = pidArr[0];
     dataFd = open(argvStr[2].c_str(), O_RDONLY);
@@ -109,7 +122,7 @@ void snl(int* pidArr, std::string (&argvStr)[maxArgc]){
     }
 
     // 一开始要主动调用一次
-    receive_sig38(0);                                                                                            
+    receive_sig38(0);                                                                                               
     // 主循环
     while(true){
         sleep(1);

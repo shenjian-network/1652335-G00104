@@ -24,6 +24,8 @@ const int SIG_ENABLE_NETWORK_LAYER = 38;
 const int SIG_DISABLE_NETWORK_LAYER = 39;
 const int SIG_D2P = 40;
 const int maxArgc = 20;
+const int SIG_ALL_START = 41;
+const int SIG_NETWORK_READ=42;
 #define ENABLE 1
 #define DISALBE 0
 #define BLOCK 1024

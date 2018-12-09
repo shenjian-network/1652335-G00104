@@ -14,28 +14,42 @@ static char name1[50];
 static char name2[50];
 
 void from_physical_layer(frame* f){
-    sprintf(name1, "rdl.datalink_physical.share.%d", cnt_from_phy);
+    sprintf(name1, "rpl.physical_datalink.share.%d", cnt_from_phy);
     int fd = open(name1, 0777);
     if(fd < 0){
         die("sdl open failed");
     }
-
-    int n_read = myRead(fd, f, sizeof(frame));
-
+    inc(cnt_from_phy);
+    int n_read = myRead(fd, f, ACK_SIZE);
+    if (f->kind == data)
+    {
+        n_read+=myRead(fd, f+ACK_SIZE, MAX_PKT);
+    }
     close(fd);
 }
 
 void to_network_layer(packet* p){
-    sprintf(name2, "rnl.network_datalink.share.%d", cnt_to_net);
-    int fd = open(name2, 0777);
+    sprintf(name2, "rdl.datalink_network.share.%d", cnt_to_net);
+    int fd = open(name2, O_CREAT | O_WRONLY, 0777);
     if(fd < 0){
         die("sdl open failed");
     }
-
+    inc(cnt_to_net);
     int n_write = myWrite(fd, p->data, BLOCK);
     close(fd);
+    kill(rnl_pid, SIG_NETWORK_READ);
+}
 
-    kill(rnl_pid, SIG_D2P);
+bool judgeClose(frame *f)
+{
+    if(f->kind!=data)
+        return true;
+    for(int i=0;i<1024;i++)
+    {
+        if(f->info.data[i]!=0)
+            return true;
+    }
+    return false;
 }
 
 
@@ -51,7 +65,19 @@ void rdl(int* pidArr){
 
     while(true){
         wait_for_event(&event);
-        from_physical_layer(&r);
-        to_network_layer(&r.info);
+        if(event==frame_arrival)
+        {
+            from_physical_layer(&r);
+            if(!judgeClose(&r))
+            {
+                printf("收到终结文件\n");
+                while(1)
+                    sleep(1);
+            }
+            if(r.kind==data)
+            {
+                to_network_layer(&r.info);
+            }
+        }
     }    
 }

@@ -45,12 +45,12 @@ static void from_network_layer(packet *p)
         {
             continue;
         }
-
         inc(cnt);
+        printf("枷锁\n");
         set_lock(fd, F_RDLCK); //如果snl disable，会直接锁�?
-
+        printf("解锁\n");
         int n_read = myRead(fd, buffer, BLOCK);
-
+        printf("readsize:%d\n",n_read);
         if (n_read < BLOCK)
         {
             // 最后一�?���?
@@ -98,11 +98,16 @@ void sdl(int *pidArr)
 
     frame s;
     packet buffer;
-
+    event_type myEvent;
     while (true)
     {
-        from_network_layer(&buffer);
-        s.info = buffer;
-        to_physical_layer(&s);
+        wait_for_event(&myEvent);
+        if(myEvent==network_layer_ready)
+        {
+            from_network_layer(&buffer);
+            s.info = buffer;
+            s.kind=data;
+            to_physical_layer(&s);
+        }
     }
 }

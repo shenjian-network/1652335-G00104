@@ -71,6 +71,10 @@ int myRead(int fd, void *buffer, int size)
         }
         else if(RecvSize==0)
         {
+            if ((errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN))
+            {
+                continue;
+            }
             return 0;
         }
         size-=RecvSize;

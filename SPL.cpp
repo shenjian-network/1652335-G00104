@@ -12,6 +12,8 @@ void SPL_initServer(string (&argvStr)[maxArgc])
 	    printf("socket fail ! \r\n");
 	    exit(EXIT_FAILURE);
 	}
+
+    cout << "debug1" << endl;
     
     int flag = 1, len = sizeof(int); 
     while(setsockopt(sfp, SOL_SOCKET, SO_REUSEADDR, &flag, len) == -1) 
@@ -27,6 +29,8 @@ void SPL_initServer(string (&argvStr)[maxArgc])
 	s_add.sin_addr.s_addr = htonl(INADDR_ANY);
 	s_add.sin_port = htons(portnum);
 
+    cout << "debug2" << endl;
+
     while(-1 == bind(sfp,(struct sockaddr *)(&s_add), sizeof(struct sockaddr)))
 	{
         if(errno == EINTR)
@@ -35,6 +39,9 @@ void SPL_initServer(string (&argvStr)[maxArgc])
 	    exit(EXIT_FAILURE);
 	}
  
+
+    cout << "debug3" << endl;
+
 	while(-1 == listen(sfp,5))
 	{
         if(errno == EINTR)
@@ -42,6 +49,8 @@ void SPL_initServer(string (&argvStr)[maxArgc])
 	    printf("listen fail !\r\n");
 	    exit(EXIT_FAILURE);
 	}
+
+    cout << "debug4" << endl;
 
     sin_size = sizeof(sockaddr_in);
 	while(-1 == (nfp = accept(sfp, (sockaddr *)(&c_add), &sin_size)))
@@ -72,6 +81,9 @@ void SPL(int* pidArr, string (&argvStr)[maxArgc])
 {
     SPL_init_sigaction();
     SPL_initServer(argvStr);
+    kill(pidArr[0], SIG_ALL_START);
+    cout << "KILL DONE!!!!!!!!!! " << pidArr[0] << endl;
+
     socketFd = nfp;
     fd_set readfds,writefds;
     while(1)
