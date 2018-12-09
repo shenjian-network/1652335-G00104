@@ -53,6 +53,8 @@ void set_lock(int fd, int type)
 // 读入数据,如果文件结束则返回0，否则会循环读到size为止
 int myRead(int fd, void *buffer, int size)
 {
+    if(size==0)
+        return 0;
     int retSize=0;
     int RecvSize;
     char *cbuffer=(char*)buffer;
@@ -71,11 +73,7 @@ int myRead(int fd, void *buffer, int size)
         }
         else if(RecvSize==0)
         {
-            if ((errno == EINTR || errno == EWOULDBLOCK || errno == EAGAIN))
-            {
-                continue;
-            }
-            return 0;
+            return retSize;
         }
         size-=RecvSize;
         cbuffer+=RecvSize;
@@ -89,6 +87,8 @@ int myRead(int fd, void *buffer, int size)
 // 写数据
 int myWrite(int fd, void *buffer, int size)
 {
+    if(size==0)
+        return 0;
     int befSize=size;
     int SendSize; 
     char* cbuffer=(char*)buffer;

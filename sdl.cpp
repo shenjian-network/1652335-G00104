@@ -39,12 +39,12 @@ static void from_network_layer(packet *p)
             continue;
         }
         inc(cnt);
-        // printf("枷锁\n");
+        printf("枷锁\n");
         set_lock(fd, F_RDLCK); //如果snl disable，会直接锁�?
-        // printf("解锁\n");
+        printf("解锁\n");
         memset((char*)(p), 0, sizeof(packet));
         int n_read = myRead(fd, p->data, BLOCK);
-        // printf("readsize:%d\n",n_read);
+        printf("readsize:%d\n",n_read);
         if (n_read < BLOCK)
         {
             cout << "n_read < BLOCK" << endl;

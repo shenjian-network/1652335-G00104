@@ -42,16 +42,13 @@ static void create_file(){
     
     int n_read = myRead(dataFd, buffer, BLOCK);
     
-    if(n_read == 0){
-        printf("snl read done\n");
-        while(1)
-            sleep(2);
-    }
-
     if(n_read < BLOCK){
         // 最后一个文件
         if(!flag)
+        {
+            printf("snl read done\n");
             flag = !flag;
+        }
     }
 
     sprintf(name, "snl.network_datalink.share.%d", count);
