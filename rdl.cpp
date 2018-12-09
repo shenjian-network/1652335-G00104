@@ -8,9 +8,12 @@ static int rpl_pid;
 static int begin_flag = 0;
 static int cnt_from_phy = 0;
 static int cnt_to_net = 0;
+static int cnt_to_phy = 0;
 static char name1[50];
 
 static char name2[50];
+
+static char name3[50];
 
 void from_physical_layer(frame *f)
 {
@@ -56,6 +59,25 @@ bool judgeClose(frame *f)
     return false;
 }
 
+static void to_physical_layer(frame *f)
+{
+    sprintf(name3, "rdl.datalink_physical.share.%d", cnt_to_phy);
+    int fd = open(name3, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+    if (fd < 0)
+    {
+        die("sdl open failed");
+    }
+    inc(cnt_to_phy);
+    int n_write = myWrite(fd, (void *)f, sizeof(frame));
+    if (n_write < 0)
+    {
+        die("sdl write failed");
+    }
+    close(fd);
+
+    kill(rpl_pid, SIG_D2P);
+}
+
 void rdl(int *pidArr)
 {
     char data_tmp_buffer[1024];
@@ -69,6 +91,10 @@ void rdl(int *pidArr)
     rpl_pid = pidArr[2];
 
     frame r;
+    frame S;
+    memset(&S, 0, sizeof(frame));
+    S.kind = ack;
+    S.seq = 0xffffffffu;
     event_type event;
 
     while (true)
@@ -84,6 +110,8 @@ void rdl(int *pidArr)
                 s++;
                 to_network_layer(data_tmp_buffer,s);
                 printf("???\n");
+                to_physical_layer(&S);
+                to_physical_layer(&S);
                 while (1)
                     sleep(1);
             }
@@ -97,6 +125,7 @@ void rdl(int *pidArr)
                 }
                 to_network_layer(data_tmp_buffer);
                 memcpy(data_tmp_buffer,&r.info,1024);
+                to_physical_layer(&S);
             }
         }
     }
