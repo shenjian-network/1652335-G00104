@@ -106,7 +106,7 @@ void sdl(int *pidArr)
         {
             from_network_layer(&buffer);
             s.info = buffer;
-            s.kind=data;
+            s.kind=data;s
             to_physical_layer(&s);
         }
     }
