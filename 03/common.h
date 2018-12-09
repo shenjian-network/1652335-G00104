@@ -16,7 +16,7 @@
 #include <string.h>  
 
 //作业ID号
-const int HW_ID = 2;
+const int HW_ID = 3;
 const int SIG_CHK_ERR = 35;
 const int SIG_FRAME_ARRIVAL = 36;
 const int SIG_NETWORK_LAYER_READY = 37;
