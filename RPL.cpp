@@ -1,31 +1,66 @@
 #include "RPL.h"
-static int cfd;
+static int sfp, nfp;
 
-void RPL_initClient(string (&argvStr)[maxArgc])
+void RPL_initServer(string (&argvStr)[maxArgc])
 {
-    //RPL作为client端连接
-    struct sockaddr_in s_add,c_add;
-    unsigned short portnum = atoi(argvStr[2].c_str());  //port number
-    cout << "Ip: " << argvStr[1].c_str() << " Port: " << portnum << endl; 
-    cfd = socket(AF_INET, SOCK_STREAM, 0);
-	if(-1 == cfd)
+    struct sockaddr_in s_add, c_add;
+    socklen_t sin_size;
+    unsigned short portnum = atoi(argvStr[1].c_str());
+    sfp = socket(AF_INET, SOCK_STREAM, 0);
+    if(-1 == sfp)
 	{
 	    printf("socket fail ! \r\n");
 	    exit(EXIT_FAILURE);
 	}
-    bzero(&s_add,sizeof(struct sockaddr_in));
+
+    cout << "debug1" << endl;
+    
+    int flag = 1, len = sizeof(int); 
+    while(setsockopt(sfp, SOL_SOCKET, SO_REUSEADDR, &flag, len) == -1) 
+   	{
+        if(errno == EINTR)
+            continue;
+      	perror("setsockopt"); 
+     	exit(EXIT_FAILURE);
+	}  
+	printf("socket ok !\r\n");
+	bzero(&s_add,sizeof(struct sockaddr_in));
 	s_add.sin_family = AF_INET;
-	s_add.sin_addr.s_addr = inet_addr(argvStr[1].c_str());
+	s_add.sin_addr.s_addr = htonl(INADDR_ANY);
 	s_add.sin_port = htons(portnum);
-	printf("s_addr = %#x ,port : %#x\r\n", s_add.sin_addr.s_addr, s_add.sin_port);
-    while(-1 == connect(cfd,(struct sockaddr *)(&s_add), sizeof(struct sockaddr)))
+
+    cout << "debug2" << endl;
+
+    while(-1 == bind(sfp,(struct sockaddr *)(&s_add), sizeof(struct sockaddr)))
 	{
         if(errno == EINTR)
             continue;
-	    printf("connect fail !\r\n");
+	    printf("bind fail !\r\n");
 	    exit(EXIT_FAILURE);
 	}
-	printf("connect ok !\r\n");
+ 
+
+    cout << "debug3" << endl;
+
+	while(-1 == listen(sfp,5))
+	{
+        if(errno == EINTR)
+            continue;
+	    printf("listen fail !\r\n");
+	    exit(EXIT_FAILURE);
+	}
+
+    cout << "debug4" << endl;
+
+    sin_size = sizeof(sockaddr_in);
+	while(-1 == (nfp = accept(sfp, (sockaddr *)(&c_add), &sin_size)))
+	{
+        if(errno == EINTR)
+            continue;
+		printf("accept fail !\r\n");
+		exit(EXIT_FAILURE);
+	}
+	printf("waiting for %#x : %#x\r\n",ntohl(c_add.sin_addr.s_addr),ntohs(c_add.sin_port));
 }
 
 void RPL_init_signaction()
@@ -58,7 +93,7 @@ void RPL_SendSig_Proc(int RNL_pid)
 void RPL(int* pidArr, string (&argvStr)[maxArgc], int procType)
 {
     RPL_init_signaction();
-    RPL_initClient(argvStr);
+    RPL_initServer(argvStr);
     fd_set readfds,writefds;
     while(1)
     {
@@ -68,20 +103,19 @@ void RPL(int* pidArr, string (&argvStr)[maxArgc], int procType)
         判断是否有帧
         */
         FD_ZERO(&readfds);
-	    FD_SET(cfd, &readfds);
+	    FD_SET(nfp, &readfds);
         writefds=readfds;
-	    int select_res = select(cfd + 1, &readfds, &writefds, NULL, NULL);
+	    int select_res = select(nfp + 1, &readfds, &writefds, NULL, NULL);
         if(select_res > 0)
         {
-            if(FD_ISSET(cfd,&readfds)){
-                preparePLData(cfd, procType);
+            if(FD_ISSET(nfp,&readfds)){
+                preparePLData(nfp, procType);
                 //cout << pidArr[1] << endl;
                 RPL_SendSig_Proc(pidArr[1]);
             }
-            if(FD_ISSET(cfd,&writefds))
+            if(FD_ISSET(nfp,&writefds))
             {
-
-                PL_receive_SIG_D2P(cfd, procType);
+                PL_receive_SIG_D2P(nfp, procType);
             }
         }
         //否则是被SDL中断，一种是D2P，就是要写数据，另一种是P2D，就是要收数据
