@@ -73,10 +73,20 @@ static void receive_datalink(int sigv)
 }
 
 
+
+static void NL_SIGNAL_INIT()
+{
+    //setMask(SIG_DISABLE_NETWORK_LAYER,receive_sig39);
+    //setMask(SIG_ENABLE_NETWORK_LAYER,receive_sig38);
+    //setMask(SIG_ALL_START,StartHandle);
+    setMask(SIG_NETWORK_READ,receive_datalink);
+    return;
+}
+
+
 void rnl(int* pidArr, std::string (&argvStr)[maxArgc]){
     // 注册
-    signal(SIG_ENABLE_NETWORK_LAYER, receive_sig38);
-    signal(SIG_NETWORK_READ, receive_datalink);
+    NL_SIGNAL_INIT();
     
     dataFd = open(argvStr[2].c_str(), O_CREAT | O_TRUNC | O_RDWR, 0777);
 

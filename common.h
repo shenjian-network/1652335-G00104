@@ -33,7 +33,7 @@ const int SIG_NETWORK_READ=43;
 #define  MAX_PKT  1024
 
 #define MAX_SEQ 10000
-#define inc(k) if(k<MAX_SEQ) k=k+1; else k=0;
+#define inc(k) k=(k+1)%10000;
 
 void set_lock(int fd, int type=F_WRLCK);
 
