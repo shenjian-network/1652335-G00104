@@ -2,6 +2,12 @@
 static int countRecv;
 static int countReady = 0;
 
+void disconnectSuspend()
+{
+    while(1)
+        sleep(1);
+}
+
 void SIG_D2P_Handle(int sigv)
 {
     // printf("1\n");
@@ -25,6 +31,10 @@ void preparePLData(int socketFd, int procType)
     /*从对端接收数据*/
     frame frameRecv;
     int size = myRead(socketFd, &frameRecv, ACK_SIZE);
+
+    if(size == 0)
+        disconnectSuspend();
+
     if (frameRecv.kind == data)
         size += myRead(socketFd, &(frameRecv.info), MAX_PKT);
     /*将数据放入文件*/
