@@ -1,0 +1,8 @@
+CC=g++
+Target = sdl
+.PHONY: all clean 
+all:$(Target) 
+$(Target):sdl.cpp sdl.h 
+	$(CC) -o sdl sdl.cpp sdl.h common.h common.cpp
+clean:
+	-rm -rf $(Target)
