@@ -112,7 +112,7 @@ void sdl(int *pidArr)
                 exit(EXIT_SUCCESS);
             }
         }
-        else
+        else 
             cout << "ack frame arrival" << endl;
     }
 }
