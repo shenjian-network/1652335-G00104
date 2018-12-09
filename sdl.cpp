@@ -30,6 +30,7 @@ static int flag2 = 0;
  */
 static void from_network_layer(packet *p)
 {
+    cout << "receive signal" << endl;
     sprintf(name, "snl.network_datalink.share.%d", cnt);
     while (1)
     {

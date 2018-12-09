@@ -58,6 +58,7 @@ void sigHandle(int sigv){
             event_list.push(frame_arrival);
         break;
         case SIG_NETWORK_LAYER_READY: 
+            cout << "SIG_NETWORK_LAYER_READY" << endl;
             event_list.push(network_layer_ready);
         break;
         case SIGALRM:

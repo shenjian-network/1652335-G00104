@@ -101,7 +101,7 @@ static void StartHandle(int sigv){
 
 void snl(int* pidArr, std::string (&argvStr)[maxArgc]){
     // 注册
-    signal(38, receive_sig38);
+    //signal(38, receive_sig38);
     signal(38, receive_sig38);
     signal(SIG_ALL_START, StartHandle);
     while(1)
