@@ -15,6 +15,12 @@ void SIG_D2P_Handle(int sigv)
     return;
 }
 
+void delay()
+{
+    for(int i = 0; i < DELAY_TIMES; ++i)
+        ;
+}   
+
 void preparePLData(int socketFd, int procType)
 {
     /*
@@ -37,6 +43,13 @@ void preparePLData(int socketFd, int procType)
 
     if (frameRecv.kind == data)
         size += myRead(socketFd, &(frameRecv.info), MAX_PKT);
+    
+    else
+    {  
+        if(frameRecv.kind == ack && dRand() < 0.1)
+            delay();
+    }
+    
     /*将数据放入文件*/
     myWrite(fd_recv, &frameRecv, size);
     close(fd_recv);
@@ -86,4 +99,9 @@ void PL_receive_SIG_D2P(int socketFd, int procType)
 void PL_init_signaction()
 {
     signal(SIG_D2P, SIG_D2P_Handle);
+}
+
+double dRand()
+{
+    return 1.0 * rand() / RAND_MAX;
 }

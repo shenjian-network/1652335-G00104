@@ -122,9 +122,9 @@ void prepareProc(int *pidArr, const procState & procS, const int shmid, bool pro
 
 void checkArgc(int argc, bool procType)
 {
-	if((procType == 0 && argc != 3) || (procType == 1 && argc != 4))
+	if((procType == 0 && argc != 4) || (procType == 1 && argc != 3))
 	{
-		cerr << "²ÎÊý¸öÊý´íÎó" << endl;
+		cerr << "argument number is wrong" << endl;
 		exit(1);
 	}	
 }

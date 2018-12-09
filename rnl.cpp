@@ -78,7 +78,7 @@ void rnl(int* pidArr, std::string (&argvStr)[maxArgc]){
     signal(SIG_ENABLE_NETWORK_LAYER, receive_sig38);
     signal(SIG_NETWORK_READ, receive_datalink);
     
-    dataFd = open(argvStr[3].c_str(), O_CREAT | O_TRUNC | O_RDWR, 0777);
+    dataFd = open(argvStr[2].c_str(), O_CREAT | O_TRUNC | O_RDWR, 0777);
 
     if(dataFd < 0){
         die(strerror(errno));

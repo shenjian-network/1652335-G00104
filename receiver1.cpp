@@ -44,6 +44,8 @@ int main(int argc, char* argv[])
 
 	PROJ_ID = procType ? 666 : 233;
 
+	srand(time(NULL) + PROJ_ID);
+	
 	checkArgc(argc, procType);
 	
 	createDaemon();
